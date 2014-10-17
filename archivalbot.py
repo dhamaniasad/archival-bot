@@ -1,4 +1,11 @@
 import requests
+import textract
+import re
+
+
+text = textract.process("urls.txt")
+urls = re.findall(r'(https?://\S+)', text)
+f = open('out.txt', 'w')
 
 
 def peeep(url):
@@ -22,3 +29,10 @@ def archivetoday(url):
     r = requests.post("http://archive.today/submit/", data=payload)
     url = r.headers['Refresh']
     return url[6:]
+
+
+for url in urls:
+    print >> f, "%s:" % url
+    print >> f, peeep(url)
+    print >> f, internetarchive(url)
+    print >> f, archivetoday(url)
